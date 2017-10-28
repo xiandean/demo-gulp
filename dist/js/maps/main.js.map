@@ -1,0 +1,1 @@
+{"version":3,"sources":["main.js"],"names":["console","log","setTimeout"],"mappings":";;AAAAA,QAAQC,GAAR,CAAY,GAAZ;AACAC,WAAW,YAAM;AAChBF,SAAQC,GAAR,CAAY,IAAZ;AACA,CAFD,EAEG,GAFH","file":"../main.js","sourcesContent":["console.log(\"i\");\r\nsetTimeout(() => {\r\n\tconsole.log(\"ok\");\r\n}, 100);"]}
