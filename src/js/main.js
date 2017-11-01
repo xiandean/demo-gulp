@@ -47,7 +47,9 @@ var app = {
                             link: shareData.link || location.href, // 分享链接
                             imgUrl: shareData.imgUrl, // 分享图标
                             success: function(res) {
-                                callback && callback();
+                                if (callback) {
+                                    callback();
+                                }
                             },
                             cancel: function(res) {}
                         });
@@ -59,7 +61,9 @@ var app = {
                             type: '', // 分享类型,music、video或link，不填默认为link
                             dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                             success: function() {
-                                callback && callback();
+                                if (callback) {
+                                    callback();
+                                }
                             },
                             cancel: function() {}
                         });
@@ -69,7 +73,9 @@ var app = {
                             link: shareData.link || location.href, // 分享链接
                             imgUrl: shareData.imgUrl, // 分享图标
                             success: function() {
-                                callback && callback();
+                                if (callback) {
+                                    callback();
+                                }
                             },
                             cancel: function() {
                                 // 用户取消分享后执行的回调函数
@@ -89,7 +95,9 @@ var app = {
                 link: shareData.link || location.href, // 分享链接
                 imgUrl: shareData.imgUrl, // 分享图标
                 success: function(res) {
-                    callback && callback();
+                    if (callback) {
+                        callback();
+                    }
                 },
                 cancel: function(res) {}
             });
@@ -101,7 +109,9 @@ var app = {
                 type: '',
                 dataUrl: '',
                 success: function() {
-                    callback && callback();
+                    if (callback) {
+                        callback();
+                    }
                 },
                 cancel: function() {}
             });
@@ -111,7 +121,9 @@ var app = {
                 link: shareData.link || location.href, // 分享链接
                 imgUrl: shareData.imgUrl, // 分享图标
                 success: function() {
-                    callback && callback();
+                    if (callback) {
+                        callback();
+                    }
                 },
                 cancel: function() {
                     // 用户取消分享后执行的回调函数
@@ -123,10 +135,14 @@ var app = {
             if (this.getQueryString("openid")) {
                 this.openid = this.getQueryString("openid");
                 localStorage.setItem("wx_openid", this.openid);
-                callback && callback();
+                if (callback) {
+                    callback();
+                }
             } else if (localStorage.getItem("wx_openid") != null) {
                 this.openid = localStorage.getItem("wx_openid");
-                callback && callback();
+                if (callback) {
+                    callback();
+                }
             } else {
                 if (this.getQueryString("oid")) {
                     window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + this.getQueryString("oid");
@@ -154,7 +170,9 @@ var app = {
                     if (data.error == 0) {
                         _this.user.wxnick = data.data.nickname;
                         _this.user.wx_headurl = data.data.headimgurl;
-                        callback && callback();
+                        if (callback) {
+                            callback();
+                        }
                     }
                     _this.getWeixinInfoing = false;
                 },
@@ -188,34 +206,35 @@ var app = {
                 dataType: 'json',
                 success: function(data) {
                     console.log(data);
+                    var result;
                     if (data.status) {
                         if (data.prize_id) {
                             // 已存在中奖记录
-                            var result = {
+                            result = {
                                 isAwarded: true,
                                 award: 1,
                                 data: data.data
-                            }
+                            };
                         } else {
                             if (data.data.prize_id) {
                                 // 中奖
-                                var result = {
+                                result = {
                                     isAwarded: false,
                                     award: 1
-                                }
+                                };
                             } else {
                                 // 不中奖
-                                var result = {
+                                result = {
                                     isAwarded: false,
                                     award: 0
-                                }
+                                };
                             }
                         }
                     } else {
-                        var result = {
+                        result = {
                             isAwarded: false,
                             award: 0
-                        }
+                        };
                     }
                     callback(result); // prize_code
                     _this.getAwarding = false;
@@ -225,7 +244,7 @@ var app = {
                     var result = {
                         isAwarded: false,
                         award: 0
-                    }
+                    };
                     callback(result); // prize_code
                     _this.getAwarding = false;
                 }
@@ -254,18 +273,24 @@ var app = {
                     if (data.status) {
                         // 提交成功
                         alert('提交成功');
-                        callback && callback();
+                        if (callback) {
+                            callback();
+                        }
                     } else {
                         // 没有中奖记录
                         alert("提交失败，没有中奖记录！");
-                        callback && callback();
+                        if (callback) {
+                            callback();
+                        }
                     }
                     _this.submitInfoing = false;
                 },
                 error: function(error) {
                     console.log(error);
                     alert("提交失败，网络出现错误！");
-                    callback && callback();
+                    if (callback) {
+                        callback();
+                    }
                     _this.submitInfoing = false;
                 }
             });
@@ -290,17 +315,23 @@ var app = {
                     if (data.status) {
                         if (data.prize_id) {
                             // 已存在中奖记录
-                            callback && callback(data.data);
+                            if (callback) {
+                                callback(data.data);
+                            }
                         } else {
                             // 不存在中奖记录
-                            callback && callback("");
+                            if (callback) {
+                                callback("");
+                            }
                         }
                     }
                     _this.getRecording = false;
                 },
                 error: function(error) {
                     console.log(error);
-                    callback && callback("");
+                    if (callback) {
+                        callback("");
+                    }
                     _this.getRecording = false;
                 }
             });
@@ -320,15 +351,21 @@ var app = {
                 success: function(data) {
                     console.log(data);
                     if (data.status) {
-                        callback && callback(data.data);
+                        if (callback) {
+                            callback(data.data);
+                        }
                     } else {
-                        callback && callback([]);
+                        if (callback) {
+                            callback([]);
+                        }
                     }
                     _this.getWinnerListing = false;
                 },
                 error: function(error) {
                     console.log(error);
-                    callback && callback([]);
+                    if (callback) {
+                        callback([]);
+                    }
                     _this.getWinnerListing = false;
                 }
             });
@@ -362,7 +399,6 @@ var app = {
         }
     }
 };
-
 // app.api.weixinBind(function() {
 //     // console.log(app.api.openid);
 // });
