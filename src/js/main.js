@@ -15,6 +15,62 @@ var app = (function(app) {
         //取随机整数 
         getRandom: function(a,b) {
             return Math.round(Math.random()*(b-a)+a);
+        },
+
+        // 图片预加载
+        loadImages: function(sources, config){  
+            var loadData = {
+                sources: sources,
+                images: sources instanceof Array ? [] : {},
+                config: config || {},
+                loadedImages: 0,
+                totalImages: 0,
+                countTotalImages: function() {
+                    this.totalImages = 0;
+                    for (var src in this.sources) {    
+                        this.totalImages += 1;    
+                    }
+                    return this.totalImages;  
+                },
+                load: function(src) {
+                    this.images[src] = new Image();
+                    //当一张图片加载完成时执行    
+                    var _this = this;
+                    this.images[src].onload = function() {
+                        _this.loadedImages += 1;
+                        var progress = Math.floor(_this.loadedImages / _this.totalImages * 100);
+                        if(_this.config.onProgress) {
+                            _this.config.onProgress(progress);
+                        }
+                        if(_this.loadedImages >= _this.totalImages) {
+                            if(_this.config.onComplete) {
+                                _this.config.onComplete(_this.images);
+                            }
+                            if(_this.config instanceof Function) {
+                                _this.config(_this.images);
+                            }
+                        }
+                    };  
+
+                    //把sources中的图片信息导入images数组  
+                    this.images[src].src = this.sources[src];    
+                }
+            };  
+
+            loadData.countTotalImages();
+
+            if (!loadData.totalImages) {  
+                if(loadData.config.onComplete) {
+                    loadData.config.onComplete(loadData.images); 
+                }
+                if(loadData.config instanceof Function) {
+                    loadData.config(loadData.images);
+                }
+            }else {
+                for (var src in loadData.sources) { 
+                    loadData.load(src);
+                }
+            } 
         }
     };
     app.api = {
@@ -24,14 +80,7 @@ var app = (function(app) {
                 nick: "",
                 headUrl: ""
             },
-            
-            shareData: {
-                link: "", //分享链接
-                title: "", //分享标题
-                desc: "", //分享描述
-                imgUrl: "" //分享图标
-            },
-            setSDK: function(callback) {
+            setConfig: function(callback) {
                 $.ajax({
                     url:"http://news.gd.sina.com.cn/market/c/gd/wxjsapi/index.php",
                     data: {
@@ -145,26 +194,27 @@ var app = (function(app) {
                         console.log(error);
                     }
                 });
-            },
+            }
         }
     };
     app.musics = {
-        bg: bgMusic,
-        others: [], //[bgMusic, ...]
+        bg: "bgMusic",
+        others: [], 
         handler: function() {
             var _this = this;
+            var bgMusic = document.getElementById(this.bg);
             var autoplay = true;
             // 控制音乐播放与暂停
-            $(this.bg).parent.on('touchstart', function() {
+            $(bgMusic).parent().on('touchstart', function() {
                 autoplay = false;
                 var $this = $(this);
                 event.stopPropagation();
                 if ($this.hasClass("animating")) {
                     $this.removeClass("animating");
-                    _this.bg.pause();
+                    bgMusic.pause();
                 } else {
                     $this.addClass("animating");
-                    _this.bg.play();
+                    bgMusic.play();
                 }
             });
             $(document).one("touchstart", function() {
@@ -172,13 +222,60 @@ var app = (function(app) {
                     _this.bg.play();
                 }
                 for(var i = 0; i < _this.others.length; i++) {
-                    _this.others[i].play();
-                    _this.others[i].pause();
+                    var other = document.getElementById(_this.others[i]);
+                    other.play();
+                    other.pause();
                 }
             });
         }
-    }
+    };
+
+    app.preload = {
+        sources: [
+            
+        ],
+        onProgress: function(progress) {
+            console.log(progress);
+        },
+        onComplete: function() {
+            console.log("complete");
+        },
+        handler: function() {
+            app.utils.loadImages(this.sources, {
+                onProgress: this.onProgress,
+                onComplete: this.onComplete
+            });
+        }
+    };
+
     return app;
 }(app || {}));
 
-app.musics.handler();
+
+// 微信分享
+app.api.weixin.setConfig(function() {
+    app.api.weixin.setShare({
+        // callback: "", //分享成功回调
+        link: "", //分享链接
+        title: "", //分享标题
+        desc: "", //分享描述
+        imgUrl: "" //分享图标
+    });
+});
+
+// 微信身份认证
+// app.api.weixin.getOpenid(function() {
+//     console.log(app.api.weixin.user.openid);
+//     app.api.weixin.getUserInfo(function() {
+//         console.log(app.api.weixin.user);
+//     });
+// });
+
+// 图片预加载
+// app.utils.loadImages(['images/1.png'], function() {
+//     app.preload.handler();
+// });
+app.preload.handler();
+
+// 音乐播放处理
+// app.musics.handler();
