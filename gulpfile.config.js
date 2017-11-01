@@ -19,8 +19,7 @@ module.exports = {
     },
     js: {
         src: 'src/js/**/*.js',
-        dest: 'dist/js',
-        name: 'main.js' // 合并后的js的文件名  
+        dest: 'dist/js'
     },
     lib: {
         src: 'src/lib/**/*',

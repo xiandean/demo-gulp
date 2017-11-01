@@ -7,6 +7,8 @@ const cleanCSS = require('gulp-clean-css');
 const sourcemaps = require('gulp-sourcemaps');
 const jshint = require('gulp-jshint');
 const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
+const inlinesource = require('gulp-inline-source');
 const browserSync = require('browser-sync').create();
 const runSequence = require('run-sequence');
 const del = require('del');
@@ -23,7 +25,7 @@ gulp.task('css', function() {
 	return gulp.src(config.css.src)
 		.pipe(sourcemaps.init())
 		.pipe(autoprefixer())
-		.pipe(cleanCSS())
+		// .pipe(cleanCSS())
 		.pipe(sourcemaps.write('./maps'))
 		.pipe(gulp.dest(config.css.dest))
 		.pipe(browserSync.reload({ stream: true }));
@@ -34,7 +36,7 @@ gulp.task('sass', function() {
 		.pipe(sourcemaps.init())
 		.pipe(autoprefixer())
 		.pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
-		.pipe(cleanCSS())
+		// .pipe(cleanCSS())
 		.pipe(sourcemaps.write('./maps'))
 		.pipe(gulp.dest(config.sass.dest))
 		.pipe(browserSync.reload({ stream: true }));
@@ -90,10 +92,29 @@ gulp.task('server', ['build', 'watch'], function() {
 		server: {
 			baseDir: config.dest
 		},
-		host: 'xiandean.gd.sina.com.cn',
-		browser: "chrome" 
+		host: 'xiandean.gd.sina.com.cn'
+		// browser: "chrome" 
 		//browser: ["chrome", "firefox"]
 	});
+});
+
+gulp.task('cssmin', function() {
+	return gulp.src(config.css.dest + "/*.css")
+		.pipe(cleanCSS())
+		.pipe(gulp.dest(config.css.dest));
+});
+gulp.task('jsmin', function() {
+	return gulp.src(config.js.dest + "/*.js")
+		.pipe(uglify())
+		.pipe(gulp.dest(config.js.dest));
+});
+gulp.task('inlinesource', function() {
+	return gulp.src(config.html.dest + "/*.html")
+		.pipe(inlinesource())
+		.pipe(gulp.dest(config.html.dest));
+});
+gulp.task('prod', ['build'], function(callback) {
+	runSequence(['cssmin', 'jsmin'], 'inlinesource', callback);
 });
 
 gulp.task('default', ['server']);
