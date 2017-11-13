@@ -204,7 +204,7 @@ var app = (function(app) {
             var _this = this;
             var bgMusic = document.getElementById(this.bg);
             var autoplay = true;
-            // 控制音乐播放与暂停
+
             $(bgMusic).parent().on('touchstart', function() {
                 autoplay = false;
                 var $this = $(this);
@@ -218,8 +218,13 @@ var app = (function(app) {
                 }
             });
             $(document).one("touchstart", function() {
-                if (_this.bg.paused && autoplay) {
-                    _this.bg.play();
+                if (bgMusic && bgMusic.paused && autoplay) {
+                    bgMusic.play();
+                    if(bgMusic.paused) {
+                        $(document).one("touchend", function() {
+                            bgMusic.play();
+                        });
+                    }
                 }
                 for(var i = 0; i < _this.others.length; i++) {
                     var other = document.getElementById(_this.others[i]);
