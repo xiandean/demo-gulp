@@ -5,6 +5,7 @@ const autoprefixer = require('gulp-autoprefixer');
 const sass = require('gulp-sass');
 const cleanCSS = require('gulp-clean-css');
 const sourcemaps = require('gulp-sourcemaps');
+const plumber = require('gulp-plumber');
 const jshint = require('gulp-jshint');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
@@ -23,6 +24,7 @@ gulp.task('html', function() {
 
 gulp.task('css', function() {
 	return gulp.src(config.css.src)
+		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(autoprefixer())
 		// .pipe(cleanCSS())
@@ -33,6 +35,7 @@ gulp.task('css', function() {
 
 gulp.task('sass', function() {
 	return gulp.src(config.sass.src)
+		.pipe(plumber())
 		.pipe(sourcemaps.init())
 		.pipe(autoprefixer())
 		.pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
@@ -51,6 +54,7 @@ gulp.task('image', function() {
 
 gulp.task('js', function() {
 	return gulp.src(config.js.src)
+		.pipe(plumber())
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'))
 		.pipe(sourcemaps.init())
