@@ -6,6 +6,7 @@
   "scripts": {
     "start": "gulp",
     "build": "gulp prod",
+    "mock": "nodemon mock/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -29,6 +30,9 @@
     "gulp-sourcemaps": "^2.6.1",
     "gulp-uglify": "^3.0.0",
     "jshint": "^2.9.5",
+    "json-server": "^0.12.1",
+    "mockjs": "^1.0.1-beta3",
+    "nodemon": "^1.12.1",
     "run-sequence": "^2.2.0"
   }
 }
