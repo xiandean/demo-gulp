@@ -26,7 +26,9 @@ gulp.task('css', function() {
 	return gulp.src(config.css.src)
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
-		.pipe(autoprefixer())
+		.pipe(autoprefixer({
+			browsers:['iOS >= 7','Android >= 4','last 2 version']
+		}))
 		// .pipe(cleanCSS())
 		.pipe(sourcemaps.write('./maps'))
 		.pipe(gulp.dest(config.css.dest))
@@ -37,7 +39,9 @@ gulp.task('sass', function() {
 	return gulp.src(config.sass.src)
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
-		.pipe(autoprefixer())
+		.pipe(autoprefixer({
+			browsers:['iOS >= 7','Android >= 4','last 2 version']
+		}))
 		.pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
 		// .pipe(cleanCSS())
 		.pipe(sourcemaps.write('./maps'))
