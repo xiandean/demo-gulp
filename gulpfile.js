@@ -52,6 +52,7 @@ gulp.task('sass', function() {
 
 gulp.task('image', function() {
 	return gulp.src(config.image.src)
+		.pipe(plumber())
 		.pipe(gulp.dest(config.image.dest))
 		.pipe(browserSync.reload({ stream: true }));
 });
