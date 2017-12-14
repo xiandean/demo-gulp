@@ -119,7 +119,10 @@ gulp.task('jsmin', function() {
 });
 gulp.task('inlinesource', function() {
 	return gulp.src(config.html.dest + "/*.html")
-		.pipe(inlinesource())
+		.pipe(inlinesource({
+			compress: true,
+			pretty: true
+		}))
 		.pipe(gulp.dest(config.html.dest));
 });
 gulp.task('prod', ['build'], function(callback) {
