@@ -155,13 +155,13 @@ var app = (function(app) {
                 });
             },
             getOpenid: function(callback) {
-                if(app.utils.getQueryString("openid")){
+                if(app.utils.getQueryString("openid")) {
                     this.user.openid = app.utils.getQueryString("openid");
                     localStorage.setItem("wx_openid", this.user.openid);
                 } else if (localStorage.getItem("wx_openid") != null) {
                     this.user.openid = localStorage.getItem("wx_openid");
                 } else {
-                    if(app.utils.getQueryString("oid")){
+                    if(app.utils.getQueryString("oid")) {
                         window.location.href='http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid='+app.utils.getQueryString("oid");
                     }else {
                         window.location.href='http://interface.gd.sina.com.cn/gdif/gdwx/wxcode';
