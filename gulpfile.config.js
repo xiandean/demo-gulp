@@ -10,7 +10,7 @@ module.exports = {
         dest: 'dist/css'
     },
     sass: {
-        src: 'src/sass/**/*.scss',
+        src: ['src/sass/**/*.scss', '!src/sass/**/common.scss', '!src/sass/utils/**/*.scss'],
         dest: 'dist/css'
     },
     image: {

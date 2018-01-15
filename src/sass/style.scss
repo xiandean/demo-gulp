@@ -1,4 +1,8 @@
+@import "common.scss";
+@import "utils/variables.scss";
+@import "utils/mixins.scss";
+@import "utils/functions.scss";
+
 .container {
-	width: 100%;
-  display: flex;
+    width: 100%;
 }

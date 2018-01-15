@@ -39,10 +39,10 @@ gulp.task('sass', function() {
 	return gulp.src(config.sass.src)
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
+		.pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
 		.pipe(autoprefixer({
 			browsers:['iOS >= 7','Android >= 4','last 2 version']
 		}))
-		.pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
 		// .pipe(cleanCSS())
 		.pipe(sourcemaps.write('./maps'))
 		.pipe(gulp.dest(config.sass.dest))
@@ -101,6 +101,8 @@ gulp.task('server', ['build', 'watch'], function() {
 		server: {
 			baseDir: config.dest
 		},
+		//停止自动打开浏览器
+		open: false,
 		host: 'xiandean.gd.sina.com.cn'
 		// browser: "chrome" 
 		//browser: ["chrome", "firefox"]
