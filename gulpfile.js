@@ -6,7 +6,7 @@ const sass = require('gulp-sass');
 const cleanCSS = require('gulp-clean-css');
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
-const jshint = require('gulp-jshint');
+// const jshint = require('gulp-jshint');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 const inlinesource = require('gulp-inline-source');
@@ -60,8 +60,8 @@ gulp.task('image', function() {
 gulp.task('js', function() {
 	return gulp.src(config.js.src)
 		.pipe(plumber())
-		.pipe(jshint())
-		.pipe(jshint.reporter('default'))
+		// .pipe(jshint())
+		// .pipe(jshint.reporter('default'))
 		.pipe(sourcemaps.init())
 		.pipe(babel({
 			presets: ['es2015']
