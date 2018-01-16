@@ -1,11 +1,10 @@
-
 var app = (function (app) {
   app.utils = {
 
     // 获取url中的get参数
-    getQueryString: function (name) { 
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i")
-      var url = window.location.search.replace(/&amp;(amp;)?/g, "&")
+    getQueryString: function (name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
+      var url = window.location.search.replace(/&amp;(amp;)?/g, '&')
       var r = url.substr(1).match(reg)
       if (r !== null) {
         return unescape(r[2])
@@ -13,7 +12,7 @@ var app = (function (app) {
       return null
     },
 
-    //取随机整数 
+    // 取随机整数
     getRandom: function (min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min)
     },
@@ -29,14 +28,14 @@ var app = (function (app) {
         countTotalImages: function () {
           this.totalImages = 0
           for (var src in this.sources) {
-            this.totalImages += 1  
+            this.totalImages += 1
           }
           return this.totalImages
         },
         load: function (src) {
           this.images[src] = new Image()
 
-          //当一张图片加载完成时执行    
+          // 当一张图片加载完成时执行
           var _this = this
           this.images[src].onload = function () {
             _this.loadedImages += 1
@@ -54,14 +53,14 @@ var app = (function (app) {
             }
           }
 
-          //把sources中的图片信息导入images数组
-          this.images[src].src = this.sources[src] 
+          // 把sources中的图片信息导入images数组
+          this.images[src].src = this.sources[src]
         }
       }
 
       loadData.countTotalImages()
 
-      if (!loadData.totalImages) {  
+      if (!loadData.totalImages) {
         if (loadData.config.onComplete) {
           loadData.config.onComplete(loadData.images)
         }
@@ -70,7 +69,7 @@ var app = (function (app) {
         }
       } else {
         for (var src in loadData.sources) {
-            loadData.load(src)
+          loadData.load(src)
         }
       }
     }
@@ -79,17 +78,17 @@ var app = (function (app) {
   app.api = {
     weixin: {
       user: {
-        openid: "",
-        nick: "",
-        headUrl: ""
+        openid: '',
+        nick: '',
+        headUrl: ''
       },
       setConfig: function (callback) {
         $.ajax({
-          url:"http://news.gd.sina.com.cn/market/c/gd/wxjsapi/index.php",
+          url: 'http://news.gd.sina.com.cn/market/c/gd/wxjsapi/index.php',
           data: {
             url: location.href.split('#')[0]
           },
-          dataType: "jsonp",
+          dataType: 'jsonp',
           success: function (jsondata) {
             wx.config({
               debug: false,
@@ -98,7 +97,7 @@ var app = (function (app) {
               nonceStr: jsondata.data.nonceStr,
               signature: jsondata.data.signature,
               jsApiList: [
-                'onMenuShareTimeline', 'onMenuShareAppMessage','onMenuShareQQ'
+                'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ'
               ]
             })
 
@@ -141,8 +140,8 @@ var app = (function (app) {
           desc: options.desc,
           link: options.link || location.href,
           imgUrl: options.imgUrl,
-          success: function () { 
-            if(options.callback) {
+          success: function () {
+            if (options.callback) {
               options.callback()
             }
           },
@@ -153,15 +152,15 @@ var app = (function (app) {
         })
       },
       getOpenid: function (callback) {
-        if (app.utils.getQueryString("openid")) {
-          this.user.openid = app.utils.getQueryString("openid")
-          localStorage.setItem("wx_openid", this.user.openid)
-        } else if (localStorage.getItem("wx_openid") !== null) {
-          this.user.openid = localStorage.getItem("wx_openid")
+        if (app.utils.getQueryString('openid')) {
+          this.user.openid = app.utils.getQueryString('openid')
+          localStorage.setItem('wx_openid', this.user.openid)
+        } else if (localStorage.getItem('wx_openid') !== null) {
+          this.user.openid = localStorage.getItem('wx_openid')
         } else {
-          if (app.utils.getQueryString("oid")) {
-            window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + app.utils.getQueryString("oid")
-          }else {
+          if (app.utils.getQueryString('oid')) {
+            window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + app.utils.getQueryString('oid')
+          } else {
             window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode'
           }
           return
@@ -173,8 +172,8 @@ var app = (function (app) {
       getUserInfo: function (callback) {
         var _this = this
         $.ajax({
-          url:'http://interface.gd.sina.com.cn/gdif/gdwx/c_member/',
-          data: { openid : _this.user.openid},
+          url: 'http://interface.gd.sina.com.cn/gdif/gdwx/c_member/',
+          data: {openid: _this.user.openid},
           type: 'get',
           dataType: 'jsonp',
           jsonp: 'callback',
@@ -184,12 +183,12 @@ var app = (function (app) {
               _this.user.nick = data.data.nickname
               _this.user.headUrl = data.data.headimgurl
               if (callback) {
-                  callback()
+                callback()
               }
             }
           },
           error: function (error) {
-              console.log(error)
+            console.log(error)
           }
         })
       }
@@ -197,30 +196,30 @@ var app = (function (app) {
   }
 
   app.musics = {
-    bg: "bgMusic",
-    others: [], 
+    bg: 'bgMusic',
+    others: [],
     handler: function () {
       var _this = this
       var bgMusic = document.getElementById(this.bg)
       var autoplay = true
 
-      $(bgMusic).parent().on('touchstart', function() {
+      $(bgMusic).parent().on('touchstart', function () {
         autoplay = false
         var $this = $(this)
         event.stopPropagation()
-        if ($this.hasClass("animating")) {
-          $this.removeClass("animating")
+        if ($this.hasClass('animating')) {
+          $this.removeClass('animating')
           bgMusic.pause()
         } else {
-          $this.addClass("animating")
+          $this.addClass('animating')
           bgMusic.play()
         }
       })
-      $(document).one("touchstart", function() {
+      $(document).one('touchstart', function () {
         if (bgMusic && bgMusic.paused && autoplay) {
           bgMusic.play()
           if (bgMusic.paused) {
-            $(document).one("touchend", function() {
+            $(document).one('touchend', function () {
               bgMusic.play()
             })
           }
@@ -242,7 +241,7 @@ var app = (function (app) {
       console.log(progress)
     },
     onComplete: function () {
-      console.log("complete")
+      console.log('complete')
     },
     handler: function () {
       app.utils.loadImages(this.sources, {
@@ -253,16 +252,16 @@ var app = (function (app) {
   }
 
   return app
-})(app || {})
+})(window.app || {})
 
 // 微信分享
 app.api.weixin.setConfig(function () {
   app.api.weixin.setShare({
     // callback: "", //分享成功回调
-    link: "", //分享链接
-    title: "", //分享标题
-    desc: "", //分享描述
-    imgUrl: "" //分享图标
+    link: '', // 分享链接
+    title: '', // 分享标题
+    desc: '', // 分享描述
+    imgUrl: '' // 分享图标
   })
 })
 
@@ -276,7 +275,7 @@ app.api.weixin.setConfig(function () {
 
 // 图片预加载
 // app.utils.loadImages(['images/1.png'], function () {
-//    app.preload.handler()
+//   app.preload.handler()
 // })
 app.preload.handler()
 
