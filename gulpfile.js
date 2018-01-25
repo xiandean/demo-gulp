@@ -13,6 +13,7 @@ const inlinesource = require('gulp-inline-source')
 const browserSync = require('browser-sync').create()
 const runSequence = require('run-sequence')
 const del = require('del')
+const purifycss = require('gulp-purifycss')
 
 const config = require('./gulpfile.config.js')
 
@@ -110,6 +111,10 @@ gulp.task('server', ['build', 'watch'], function () {
 
 gulp.task('cssmin', function () {
   return gulp.src(config.css.dest + '/*.css')
+    .pipe(purifycss([
+      config.html.dest + '/*.html',
+      config.js.dest + '/*.js'
+    ]))
     .pipe(cleanCSS())
     .pipe(gulp.dest(config.css.dest))
 })
@@ -127,7 +132,7 @@ gulp.task('inlinesource', function () {
     .pipe(gulp.dest(config.html.dest))
 })
 gulp.task('prod', ['build'], function (callback) {
-  runSequence(['cssmin', 'jsmin'], 'inlinesource', callback)
+  runSequence('jsmin', 'cssmin', 'inlinesource', callback)
 })
 
 gulp.task('default', ['server'])
