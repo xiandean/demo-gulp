@@ -3,6 +3,30 @@
 @import "utils/mixins.scss";
 @import "utils/functions.scss";
 
+html, body {
+	height: 100%;
+}
+
 .container {
     width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.page,
+.pop {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: none;
+    &.active {
+    	display: block;
+    }
+}
+
+.pop {
+    background: rgba(0, 0, 0, 0.8);
 }
