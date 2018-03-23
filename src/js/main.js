@@ -163,7 +163,7 @@ var app = (function (app) {
         // 合成海报
         create: function (callback) {
             // 图片预加载
-            var templateData = this._selectedTemplate || this.templateList[0];
+            var templateData = this._selectedTemplate || this.selectTemplate();
             var canvas = document.createElement('canvas');
             canvas.width = this.width;
             canvas.height = this.height;
