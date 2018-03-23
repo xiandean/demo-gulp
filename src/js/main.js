@@ -105,7 +105,7 @@ var app = (function (app) {
         height: window.innerHeight,
 
         // 海报模板数据列表
-        templateList: [{bg: 'images/bg1.jpg', cover: 'images/cover1.png'}, {bg: 'images/bg2.jpg', cover: 'images/cover2.png'}],
+        templateList: [],
 
         // 设置图片上传
         setUploadPicture: function () {
@@ -170,8 +170,7 @@ var app = (function (app) {
             var context = canvas.getContext('2d');
             var _this = this;
             app.utils.loadImages({
-                bg: templateData.bg,
-                cover: templateData.cover
+                
             }, {
                 crossOrigin: true,
                 onComplete: function (images) {
@@ -179,19 +178,13 @@ var app = (function (app) {
                         main: _this.uploadedPicture
                     }, function (dataUrls) {
                         images.main = dataUrls.main;
-                        var drawList = [{
-                            image: images.bg,
-                            x: 0,
-                            y: 0
-                        }, {
-                            image: images.main,
-                            x: 100,
-                            y: canvas.height - images.main.height - 200
-                        }, {
-                            image: images.cover,
-                            x: 0,
-                            y: 0
-                        }];
+                        var drawList = [
+                            {
+                                image: images.main,
+                                x: 100,
+                                y: canvas.height - images.main.height - 200
+                            }
+                        ];
                         // console.log(drawList);
                         drawList.forEach(function (obj) {
                             context.drawImage(obj.image, obj.x || 0, obj.y || 0);
@@ -208,7 +201,7 @@ var app = (function (app) {
         },
 
         // 获取海报dataUrl
-        get: function () {
+        getDataUrl: function () {
             return this._src;
         }
     };
@@ -257,14 +250,12 @@ var app = (function (app) {
 
     // 后台接口
     app.api = {
+        user: {
+            openid: '', // openid
+            name: '', // 昵称
+            avatar: '' // 头像
+        },
         weixin: {
-            // 微信用户信息
-            user: {
-                openid: '', // openid
-                name: '', // 昵称
-                avatar: '' // 头像
-            },
-
             ready: function (callback) {
                 $.ajax({
                     url: 'http://news.gd.sina.com.cn/market/c/gd/wxjsapi/index.php',
@@ -292,8 +283,9 @@ var app = (function (app) {
                 });
             },
             setShare: function (options) {
-                wx.onMenuShareTimeline({
+                var config = {
                     title: options.title, // 分享标题
+                    desc: options.desc, // 分享描述
                     link: options.link || location.href, // 分享链接
                     imgUrl: options.imgUrl, // 分享图标
                     success: function (res) {
@@ -302,49 +294,23 @@ var app = (function (app) {
                         }
                     },
                     cancel: function (res) {
-
+                        console.log(res);
                     }
-                });
-                wx.onMenuShareAppMessage({
-                    title: options.title, // 分享标题
-                    desc: options.desc, // 分享描述
-                    link: options.link || location.href, // 分享链接
-                    imgUrl: options.imgUrl, // 分享图标
-                    type: '', // 分享类型,music、video或link，不填默认为link
-                    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-                    success: function () {
-                        if (options.callback) {
-                            options.callback();
-                        }
-                    },
-                    cancel: function () {
-
-                    }
-                });
-                wx.onMenuShareQQ({
-                    title: options.title, // 分享标题
-                    desc: options.desc, // 分享描述
-                    link: options.link || location.href, // 分享链接
-                    imgUrl: options.imgUrl, // 分享图标
-                    success: function () {
-                        if (options.callback) {
-                            options.callback();
-                        }
-                    },
-                    cancel: function () {
-                        // 用户取消分享后执行的回调函数
-                    }
-                });
+                }
+                wx.onMenuShareTimeline(config);
+                wx.onMenuShareAppMessage(config);
+                wx.onMenuShareQQ(config);
                 wx.error(function (res) {
+                    console.log(res);
                     // alert(JSON.stringify(res));
                 });
             },
             getOpenid: function (callback) {
                 if (app.utils.getQueryString('openid')) {
-                    this.user.openid = app.utils.getQueryString('openid');
-                    localStorage.setItem('wx_openid', this.user.openid);
+                    app.api.user.openid = app.utils.getQueryString('openid');
+                    localStorage.setItem('wx_openid', app.api.user.openid);
                 } else if (localStorage.getItem('wx_openid') !== null) {
-                    this.user.openid = localStorage.getItem('wx_openid');
+                    app.api.user.openid = localStorage.getItem('wx_openid');
                 } else {
                     if (app.utils.getQueryString('oid')) {
                         window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + app.utils.getQueryString('oid');
@@ -354,24 +320,23 @@ var app = (function (app) {
                     return;
                 }
                 if (callback) {
-                    callback(this.user.openid);
+                    callback(app.api.user.openid);
                 }
             },
             getUserInfo: function (callback) {
-                var _this = this;
                 $.ajax({
                     url: 'http://interface.gd.sina.com.cn/gdif/gdwx/c_member/',
-                    data: {openid: _this.user.openid},
+                    data: {openid: app.api.user.openid},
                     type: 'get',
                     dataType: 'jsonp',
                     jsonp: 'callback',
                     success: function (data) {
                         console.log(data);
                         if (data.error == 0) {
-                            _this.user.name = data.data.nickname;
-                            _this.user.avatar = data.data.headimgurl;
+                            app.api.user.name = data.data.nickname;
+                            app.api.user.avatar = data.data.headimgurl;
                             if (callback) {
-                                callback(_this.user);
+                                callback(app.api.user);
                             }
                         }
                     },
@@ -382,12 +347,6 @@ var app = (function (app) {
             }
         },
         weibo: {
-            // 微博用户信息
-            user: {
-                uid: '', // uid
-                name: '', // 昵称
-                avatar: '' // 头像
-            },
             getUserInfo: function (callback) {
                 var _this = this;
                 $.ajax({
@@ -402,10 +361,10 @@ var app = (function (app) {
                         if (d.error == 1) {
                             window.location.href = 'http://login.weibo.cn/login/setssocookie/?loginpage=h5&backUrl=' + location.href;
                         } else if (d.data.errno == 1) {
-                            _this.user.uid = d.current_uid;
-                            _this.user.name = d.data.result.screen_name;
-                            _this.user.avatar = d.data.result.avatar_large;
-                            callback && callback(_this.user);
+                            app.api.user.openid = d.current_uid;
+                            app.api.user.name = d.data.result.screen_name;
+                            app.api.user.avatar = d.data.result.avatar_large;
+                            callback && callback(app.api.user);
                         }
                     },
                     error: function (d) {
