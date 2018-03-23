@@ -1,11 +1,11 @@
-var app = (function (app) {
+const app = {
     // 工具函数
-    app.utils = {
+    utils: {
         // 获取url中的get参数
-        getQueryString: function (name) {
-            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-            var url = window.location.search.replace(/&amp;(amp;)?/g, '&');
-            var r = url.substr(1).match(reg);
+        getQueryString (name) {
+            const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+            const url = window.location.search.replace(/&amp;(amp;)?/g, '&');
+            const r = url.substr(1).match(reg);
             if (r !== null) {
                 return unescape(r[2]);
             }
@@ -13,58 +13,58 @@ var app = (function (app) {
         },
 
         // 是否在微信上打开
-        isWeixin: function () {
-            var ua = navigator.userAgent.toLowerCase();
-            if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+        isWeixin () {
+            const ua = navigator.userAgent.toLowerCase();
+            if (ua.match(/MicroMessenger/i) === 'micromessenger') {
                 return true;
             } else {
                 return false;
             }
         },
 
-        // 取随机整数
-        getRandomInt: function (min, max) {
+        // 获取随机整数
+        getRandomInt (min, max) {
             return Math.floor(Math.random() * (max - min + 1) + min);
         },
 
         // 图片预加载 config: {onProgress, onComplete, crossOrigin} 或者 config: callback
-        loadImages: function (sources, config) {
-            var loadData = {
+        loadImages (sources, config = {}) {
+            const loadData = {
                 sources: sources,
                 images: sources instanceof Array ? [] : {},
-                config: config || {},
+                config: config,
                 loadedImages: 0,
                 totalImages: 0,
-                countTotalImages: function () {
+                countTotalImages () {
                     this.totalImages = 0;
-                    for (var src in this.sources) {
+                    for (let src in this.sources) {
                         this.totalImages += 1;
                     }
                     return this.totalImages;
                 },
-                load: function (src, crossOrigin) {
+                load (src, crossOrigin) {
                     this.images[src] = new Image();
-                    // 当一张图片加载完成时执行
-                    var _this = this;
-                    this.images[src].onload = function () {
-                        _this.loadedImages += 1;
-                        var progress = Math.floor(_this.loadedImages / _this.totalImages * 100);
-                        if (_this.config.onProgress) {
-                            _this.config.onProgress(progress);
+                    this.images[src].onload = () => {
+                        this.loadedImages += 1;
+                        let progress = Math.floor(this.loadedImages / this.totalImages * 100);
+
+                        if (this.config.onProgress) {
+                            this.config.onProgress(progress);
                         }
-                        if (_this.loadedImages >= _this.totalImages) {
-                            if (_this.config.onComplete) {
-                                _this.config.onComplete(_this.images);
+                        if (this.loadedImages >= this.totalImages) {
+                            if (this.config.onComplete) {
+                                this.config.onComplete(this.images);
                             }
-                            if (_this.config instanceof Function) {
-                                _this.config(_this.images);
+                            if (this.config instanceof Function) {
+                                this.config(this.images);
                             }
                         }
                     };
-                    this.images[src].onerror = function (e) {
-                        console.log(e);
+
+                    this.images[src].onerror = (e) => {
+                        console.log('图片加载出错：' + src);
                     };
-                    // 把sources中的图片信息导入images数组
+
                     if (crossOrigin) {
                         this.images[src].crossOrigin = '*';
                     }
@@ -78,11 +78,12 @@ var app = (function (app) {
                 if (loadData.config.onComplete) {
                     loadData.config.onComplete(loadData.images);
                 }
-                if (loadData.config instanceof Function) {
+
+                if(loadData.config instanceof Function) {
                     loadData.config(loadData.images);
                 }
             } else {
-                for (var src in loadData.sources) {
+                for (let src in loadData.sources) {
                     if (loadData.config.crossOrigin) {
                         loadData.load(src, true);
                     } else {
@@ -91,10 +92,10 @@ var app = (function (app) {
                 }
             }
         }
-    };
+    },
 
     // 海报合成
-    app.posture = {
+    posture: {
         // 用户上传的图片
         uploadedPicture: '',
 
@@ -105,37 +106,46 @@ var app = (function (app) {
         height: window.innerHeight,
 
         // 海报模板数据列表
-        templateList: [{bg: 'images/bg1.jpg', cover: 'images/cover1.png'}, {bg: 'images/bg2.jpg', cover: 'images/cover2.png'}],
+        templateList: [],
 
         // 设置图片上传
-        setUploadPicture: function () {
-            var _this = this;
-            var uploadBoxConfig = {
-                gestureArea: 'gestureArea', // 手势的有效区域  参数为元素id
-                uploadCanvas: 'uploadCanvas', // 显示图像的画布  参数为元素id
-                chooseButton: 'chooseButton', // 选择图片按钮  参数为input元素id
-                uploadButton: 'uploadButton', // 最终确认并上传的按钮 (可不传)  参数为元素id
-                uploadServered: false, // 是否需要上传到服务器转换成jpg格式 (可不传，不传则生成的图片格式为base64)
-                // onChange: onChange, // 回调函数，选择图片变化后执行
-                callback: onComplete // 回调函数，图片上传成功后执行，函数中的参数为图片的地址
+        setUploadPicture () {
+            const uploadBoxConfig = {
+                // 手势的有效区域  参数为元素id
+                gestureArea: 'gestureArea',
+
+                // 显示图像的画布  参数为元素id
+                uploadCanvas: 'uploadCanvas',
+
+                // 选择图片按钮  参数为input元素id
+                chooseButton: 'chooseButton',
+
+                // 最终确认并上传的按钮 (可不传)  参数为元素id
+                uploadButton: 'uploadButton',
+
+                // 是否需要上传到服务器转换成jpg格式 (可不传，不传则生成的图片格式为base64)
+                uploadServered: false,
+
+                // 回调函数，选择图片变化后执行
+                // onChange: onChange,
+                
+                // 回调函数，图片上传成功后执行，函数中的参数为图片的地址
+                callback (src) {
+                    if (src) {
+                        this.uploadedPicture = src;
+                    } else {
+                        alert('请先上传图片！');
+                    }
+                }
             };
 
-            var Box = new uploadBox(uploadBoxConfig);
-
-            function onComplete (src) { // 图片上传成功后的回调函数
-                // console.log(src);
-                if (src) {
-                    _this.uploadedPicture = src;
-                } else {
-                    alert('请先上传图片');
-                }
-            }
+            const Box = new uploadBox(uploadBoxConfig);
         },
 
         // 选择海报模板
-        selectTemplate: function (index) {
-            var templateIndex = index;
-            if (templateIndex === undefined) {
+        selectTemplate (index) {
+            let templateIndex = index;
+            if (!templateIndex && templateIndex !== 0) {
                 templateIndex = app.utils.getRandomInt(0, this.templateList.length - 1);
             }
             this._selectedTemplate = this.templateList[templateIndex];
@@ -143,64 +153,56 @@ var app = (function (app) {
         },
 
         // 获取已选模板
-        getSelectedTemplate: function () {
+        getSelectedTemplate () {
             return this._selectedTemplate;
         },
 
         // 设置海报信息
-        setConfig: function (options) {
-            if (options.templateList) {
-                this.templateList = options.templateList;
+        setConfig ({templateList, width, height} = {}) {
+            if (templateList) {
+                this.templateList = templateList;
             }
-            if (options.width) {
-                this.width = options.width;
+            if (width) {
+                this.width = width;
             }
-            if (options.height) {
-                this.height = options.height;
+            if (height) {
+                this.height = height;
             }
         },
 
         // 合成海报
-        create: function (callback) {
-            // 图片预加载
-            var templateData = this._selectedTemplate || this.templateList[0];
-            var canvas = document.createElement('canvas');
+        create (callback) {
+            const templateData = this._selectedTemplate || this.selectTemplate();
+            const canvas = document.createElement('canvas');
             canvas.width = this.width;
             canvas.height = this.height;
-            var context = canvas.getContext('2d');
-            var _this = this;
+            const context = canvas.getContext('2d');
+
             app.utils.loadImages({
-                bg: templateData.bg,
-                cover: templateData.cover
+
             }, {
                 crossOrigin: true,
-                onComplete: function (images) {
+                onComplete (images) {
                     app.utils.loadImages({
-                        main: _this.uploadedPicture
-                    }, function (dataUrls) {
+                        main: this.uploadedPicture
+                    }, (dataUrls) => {
                         images.main = dataUrls.main;
-                        var drawList = [{
-                            image: images.bg,
-                            x: 0,
-                            y: 0
-                        }, {
-                            image: images.main,
-                            x: 100,
-                            y: canvas.height - images.main.height - 200
-                        }, {
-                            image: images.cover,
-                            x: 0,
-                            y: 0
-                        }];
-                        // console.log(drawList);
-                        drawList.forEach(function (obj) {
+                        const drawList = [
+                            {
+                                images: images.main,
+                                x: 0,
+                                y: canvas.height - images.main.height
+                            }
+                        ];
+
+                        drawList.forEach((obj) => {
                             context.drawImage(obj.image, obj.x || 0, obj.y || 0);
                         });
 
-                        _this._src = canvas.toDataURL('image/png', 1);
+                        this._src = canvas.toDataURL('image/png', 1);
 
                         if (callback) {
-                            callback(_this._src);
+                            callback(this.src);
                         }
                     });
                 }
@@ -208,71 +210,76 @@ var app = (function (app) {
         },
 
         // 获取海报dataUrl
-        get: function () {
+        getDataUrl () {
             return this._src;
         }
-    };
+    },
 
     // 音乐
-    app.musics = {
-        bg: '', // 背景音乐id (将自动播放)
-        others: [], // 其他音效ids
-        main: function () { // 音效播放处理入口
+    musics: {
+        // 背景音乐id (将自动播放)
+        bg: '',
+
+        // 其他音效ids
+        others: [],
+
+        // 音乐播放处理入口
+        main () {
             if (!this.bg && !this.others.length) {
                 return;
             }
-            var _this = this;
-            var bgMusic = document.getElementById(this.bg);
-            var autoplay = true;
 
-            $(bgMusic).parent().on('touchstart', function () {
-                autoplay = false;
-                var $this = $(this);
+            const bgMusic = document.getElementById(this.bg);
+            let autoplay = true;
+
+            $(bgMusic).parent().on('touchstart', (event) => {
                 event.stopPropagation();
-                if ($this.hasClass('animating')) {
-                    $this.removeClass('animating');
+                autoplay = false;
+
+                if ($(this).hasClass('animating')) {
+                    $(this).removeClass('animating');
                     bgMusic.pause();
                 } else {
-                    $this.addClass('animating');
+                    $(this).addClass('animating');
                     bgMusic.play();
                 }
             });
-            $(document).one('touchstart', function () {
+
+            $(document).one('touchstart', () => {
                 if (bgMusic && bgMusic.paused && autoplay) {
                     bgMusic.play();
                     if (bgMusic.paused) {
-                        $(document).one('touchend', function () {
+                        $(document).one('touchend', () => {
                             bgMusic.play();
                         });
                     }
                 }
-                for (var i = 0; i < _this.others.length; i++) {
-                    var other = document.getElementById(_this.others[i]);
+                for (let i = 0; i < this.others.length; i++) {
+                    let other = document.getElementById(this.others[i]);
                     other.play();
                     other.pause();
                 }
             });
         }
-    };
+    },
 
     // 后台接口
-    app.api = {
+    api: {
+        user: {
+            openid: '',
+            name: '',
+            avatar: ''
+        },
         weixin: {
-            // 微信用户信息
-            user: {
-                openid: '', // openid
-                name: '', // 昵称
-                avatar: '' // 头像
-            },
 
-            ready: function (callback) {
+            ready (callback) {
                 $.ajax({
                     url: 'http://news.gd.sina.com.cn/market/c/gd/wxjsapi/index.php',
                     data: {
                         url: location.href.split('#')[0]
                     },
                     dataType: 'jsonp',
-                    success: function (jsondata) {
+                    success (jsondata) {
                         wx.config({
                             debug: false,
                             appId: jsondata.data.appId,
@@ -291,60 +298,37 @@ var app = (function (app) {
                     }
                 });
             },
-            setShare: function (options) {
-                wx.onMenuShareTimeline({
-                    title: options.title, // 分享标题
-                    link: options.link || location.href, // 分享链接
-                    imgUrl: options.imgUrl, // 分享图标
-                    success: function (res) {
-                        if (options.callback) {
-                            options.callback();
-                        }
-                    },
-                    cancel: function (res) {
 
-                    }
-                });
-                wx.onMenuShareAppMessage({
-                    title: options.title, // 分享标题
-                    desc: options.desc, // 分享描述
-                    link: options.link || location.href, // 分享链接
-                    imgUrl: options.imgUrl, // 分享图标
-                    type: '', // 分享类型,music、video或link，不填默认为link
-                    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-                    success: function () {
-                        if (options.callback) {
-                            options.callback();
+            setShare ({title, desc, link, imgUrl, callback} = {}) {
+                const config = {
+                    title: title,
+                    link: link || location.href,
+                    desc: desc,
+                    imgUrl: imgUrl,
+                    success (res) {
+                        if (callback) {
+                            callback();
                         }
                     },
-                    cancel: function () {
+                    cancel (res) {
+                        console.log(res);
+                    }
+                };
+                // 分享朋友圈
+                wx.onMenuShareTimeline(config);
 
-                    }
-                });
-                wx.onMenuShareQQ({
-                    title: options.title, // 分享标题
-                    desc: options.desc, // 分享描述
-                    link: options.link || location.href, // 分享链接
-                    imgUrl: options.imgUrl, // 分享图标
-                    success: function () {
-                        if (options.callback) {
-                            options.callback();
-                        }
-                    },
-                    cancel: function () {
-                        // 用户取消分享后执行的回调函数
-                    }
-                });
-                wx.error(function (res) {
-                    // alert(JSON.stringify(res));
-                });
+                // 分享盆友
+                wx.onMenuShareAppMessage(config);
+
+                wx.onMenuShareQQ(config)
             },
-            getOpenid: function (callback) {
+
+            getOpenid (callback) {
                 if (app.utils.getQueryString('openid')) {
-                    this.user.openid = app.utils.getQueryString('openid');
-                    localStorage.setItem('wx_openid', this.user.openid);
+                    app.api.user.openid = app.utils.getQueryString('openid');
+                    localStorage.setItem('wx_openid', app.api.user.openid);
                 } else if (localStorage.getItem('wx_openid') !== null) {
-                    this.user.openid = localStorage.getItem('wx_openid');
+                    app.api.user.openid = localStorage.getItem('wx_openid');
                 } else {
                     if (app.utils.getQueryString('oid')) {
                         window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + app.utils.getQueryString('oid');
@@ -353,43 +337,38 @@ var app = (function (app) {
                     }
                     return;
                 }
+
                 if (callback) {
-                    callback(this.user.openid);
+                    callback(app.api.user.openid);
                 }
             },
-            getUserInfo: function (callback) {
-                var _this = this;
+
+            getUserInfo (callback) {
                 $.ajax({
                     url: 'http://interface.gd.sina.com.cn/gdif/gdwx/c_member/',
-                    data: {openid: _this.user.openid},
+                    data: {openid: app.api.user.openid},
                     type: 'get',
                     dataType: 'jsonp',
                     jsonp: 'callback',
-                    success: function (data) {
+                    success (data) {
                         console.log(data);
                         if (data.error == 0) {
-                            _this.user.name = data.data.nickname;
-                            _this.user.avatar = data.data.headimgurl;
+                            app.api.user.name = data.data.nickname;
+                            app.api.user.avatar = data.data.headimgurl;
                             if (callback) {
-                                callback(_this.user);
+                                callback(app.api.user);
                             }
                         }
                     },
-                    error: function (error) {
+                    error (error) {
                         console.log(error);
                     }
                 });
             }
         },
+
         weibo: {
-            // 微博用户信息
-            user: {
-                uid: '', // uid
-                name: '', // 昵称
-                avatar: '' // 头像
-            },
-            getUserInfo: function (callback) {
-                var _this = this;
+            getUserInfo (callback) {
                 $.ajax({
                     url: 'http://mblogv2.city.sina.com.cn/interface/tcommonv2/no_auth/user/json_get_current_user_info_new.php',
                     data: {
@@ -397,31 +376,29 @@ var app = (function (app) {
                         t: 'jsonp'
                     },
                     dataType: 'jsonp',
-                    success: function (d) {
+                    success (d) {
                         console.log(d);
                         if (d.error == 1) {
                             window.location.href = 'http://login.weibo.cn/login/setssocookie/?loginpage=h5&backUrl=' + location.href;
                         } else if (d.data.errno == 1) {
-                            _this.user.uid = d.current_uid;
-                            _this.user.name = d.data.result.screen_name;
-                            _this.user.avatar = d.data.result.avatar_large;
-                            callback && callback(_this.user);
+                            app.api.user.openid = d.current_uid;
+                            app.api.user.name = d.data.result.screen_name;
+                            app.api.user.avatar = d.data.result.avatar_large;
+                            callback && callback(app.api.user);
                         }
                     },
-                    error: function (d) {
+                    error (d) {
                         console.log(d);
                     }
                 });
             },
 
-            // 发微博接口,需登陆微博
-            send: function (data, callback) { // data: {content: '测试', pic: 'xxx.jpg'}
-                var siteId = 901;
-                var appId = 196;
-                var getTokenUrl = 'http://mblogv2.city.sina.com.cn/interface/tcommonv2/cookie_auth/postaction/get_token.php';
-                var addmblogPostUrl = 'http://mblogv2.city.sina.com.cn/interface/tcommonv2/cookie_auth/postaction/json_add_mblog_new.php';
-                var content = data.content;
-                var pic = data.pic || '';
+            // 发微博接口,需登陆微博 data: {content: '测试', pic: 'xxx.jpg'}
+            send ({content, pic = ''} = {}, callback) {
+                const siteId = 901;
+                const appId = 196;
+                const getTokenUrl = 'http://mblogv2.city.sina.com.cn/interface/tcommonv2/cookie_auth/postaction/get_token.php';
+                const addmblogPostUrl = 'http://mblogv2.city.sina.com.cn/interface/tcommonv2/cookie_auth/postaction/json_add_mblog_new.php';
                 $.ajax({ // 第一次jsonp请求获取token
                     url: getTokenUrl,
                     data: {
@@ -429,7 +406,7 @@ var app = (function (app) {
                         app_id: appId
                     },
                     dataType: 'jsonp',
-                    success: function (data) {
+                    success (data) {
                         if (data && data.error == '0') {
                             $.ajax({
                                 url: addmblogPostUrl,
@@ -443,7 +420,7 @@ var app = (function (app) {
                                     x: Math.random()
                                 },
                                 dataType: 'jsonp',
-                                success: function (data) {
+                                success (data) {
                                     // sending = false;
                                     if (data && data.error == '0') {
                                         // alert('发送微博成功！'');
@@ -454,72 +431,69 @@ var app = (function (app) {
                                         // alert(data.errmsg);
                                     }
                                 },
-                                error: function (data) {
+                                error (data) {
                                     console.log(data);
                                 }
                             });
                         }
                     },
-                    error: function (data) {
+                    error (data) {
                         console.log(data);
                     }
                 });
             }
         },
+
         // 微信\微博双向绑定
-        doubleBind: function (callback) {
+        doubleBind (callback) {
             if (app.utils.isWeixin()) {
-                var _this = this;
-                this.weixin.getOpenid(function () {
+                this.weixin.getOpenid(() => {
                     _this.weixin.getUserInfo(callback);
                 });
             } else {
                 this.weibo.getUserInfo(callback);
             }
         }
-    };
+    },
 
     // 图片预加载
-    app.preload = {
+    preload: {
         sources: [],
-        onProgress: function (progress) {
-            // console.log(progress);
+        onProgress (progress) {
+            console.log(progress);
         },
-        onComplete: function () {
+        onComplete () {
             $('.loading').removeClass('active');
             $('.p1').addClass('active');
         },
 
-        // 入口
-        main: function () {
+        main () {
             app.utils.loadImages(this.sources, {
                 onProgress: this.onProgress,
                 onComplete: this.onComplete
             });
         }
-    };
+    },
 
     // 交互事件
-    app.events = {
-        // 阻止touchmove默认事件
-        preventDefault: function () {
-            document.addEventListener('touchmove', function (event) {
+    events: {
+        preventDefault () {
+            document.addEventListener('touchmove', (event) => {
                 event.preventDefault();
-            }, { passive: false });
+            });
         },
 
-        // 入口
-        main: function () {
+        main () {
             this.preventDefault();
         }
-    };
+    },
 
     // app主入口
-    app.main = function () {
+    main () {
         // 微信分享
-        app.api.weixin.ready(function () {
-            if (app.musics.bg) { // 背景音乐微信自动播放
-                document.getElementById(app.musics.bg).play();
+        app.api.weixin.ready(() => {
+            if (app.musics.bg) {
+                document.getElementById((app.musics.bg)).play();
             }
 
             app.api.weixin.setShare({
@@ -532,24 +506,24 @@ var app = (function (app) {
         });
 
         // 微信身份认证
-        // app.api.weixin.getOpenid(function (openid) {
-        //     console.log(app.api.weixin.user.openid);
-        //     app.api.weixin.getUserInfo(function (user) {
-        //         console.log(app.api.weixin.user);
+        // app.api.weixin.getOpenid((openid) => {
+        //     console.log(app.api.user.openid);
+        //     app.api.weixin.getUserInfo((user) => {
+        //         console.log(app.api.user);
         //     });
         // });
         // 微博身份认证
-        // app.api.weibo.getUserInfo(function (user) {
-        //     console.log(app.api.weibo.user);
+        // app.api.weibo.getUserInfo((user) => {
+        //     console.log(app.api.user);
         // });
         // 微信或微博身份认证
-        // app.api.doubleBind(function (user) {
+        // app.api.doubleBind((user) => {
         //     console.log(user);
         // });
 
         // 图片预加载入口
         app.preload.main();
-        // app.utils.loadImages(['images/bg.jpg'], function() {
+        // app.utils.loadImages(['images/bg.jpg'], () => {
         //     app.preload.sources = [
 
         //     ];
@@ -562,8 +536,6 @@ var app = (function (app) {
         // 用户交互事件入口
         app.events.main();
     }
-
-    return app;
-}(app || {}));
+};
 
 app.main();
