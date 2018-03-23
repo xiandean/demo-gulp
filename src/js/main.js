@@ -492,14 +492,14 @@ var app = (function (app) {
 
         // 微信身份认证
         // app.api.weixin.getOpenid(function (openid) {
-        //     console.log(app.api.weixin.user.openid);
+        //     console.log(app.api.user.openid);
         //     app.api.weixin.getUserInfo(function (user) {
-        //         console.log(app.api.weixin.user);
+        //         console.log(app.api.user);
         //     });
         // });
         // 微博身份认证
         // app.api.weibo.getUserInfo(function (user) {
-        //     console.log(app.api.weibo.user);
+        //     console.log(app.api.user);
         // });
         // 微信或微博身份认证
         // app.api.doubleBind(function (user) {
