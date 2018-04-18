@@ -1,3 +1,8 @@
+import testA from './a.js';
+import testB from './b.js';
+// console.log(testA);
+let tt = Array.from(document.querySelectorAll('div'));
+console.log(tt);
 const app = {
     // 工具函数
     utils: {

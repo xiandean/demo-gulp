@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   src: 'src',
   dest: 'dist',
@@ -28,5 +30,8 @@ module.exports = {
   json: {
     src: 'src/json/**/*',
     dest: 'dist/json'
+  },
+  entry: {
+    main: path.resolve(__dirname, 'src/js/main.js')
   }
 }

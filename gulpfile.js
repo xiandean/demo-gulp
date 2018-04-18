@@ -16,6 +16,8 @@ const del = require('del')
 const purifycss = require('gulp-purifycss')
 
 const config = require('./gulpfile.config.js')
+const webpack = require('webpack-stream')
+const webpackConfig = require('./webpack.config.js')
 
 gulp.task('html', function () {
   return gulp.src(config.html.src)
@@ -57,17 +59,25 @@ gulp.task('image', function () {
     .pipe(browserSync.reload({ stream: true }))
 })
 
+// gulp.task('js', function () {
+//   return gulp.src(config.js.src)
+//     .pipe(plumber())
+//     // .pipe(eslint())
+//     // .pipe(eslint.format())
+//     // .pipe(eslint.failAfterError())
+//     .pipe(sourcemaps.init())
+//     .pipe(babel({
+//       presets: ['es2015']
+//     }))
+//     .pipe(sourcemaps.write('./maps'))
+//     .pipe(gulp.dest(config.js.dest))
+//     .pipe(browserSync.reload({ stream: true }))
+// })
+
 gulp.task('js', function () {
-  return gulp.src(config.js.src)
+  return gulp.src('src/entry.js')
     .pipe(plumber())
-    // .pipe(eslint())
-    // .pipe(eslint.format())
-    // .pipe(eslint.failAfterError())
-    .pipe(sourcemaps.init())
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    .pipe(sourcemaps.write('./maps'))
+    .pipe(webpack(webpackConfig))
     .pipe(gulp.dest(config.js.dest))
     .pipe(browserSync.reload({ stream: true }))
 })
