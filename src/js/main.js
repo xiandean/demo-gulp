@@ -44,3 +44,13 @@ const app = {
 };
 
 app.main();
+
+async function test () {
+    try {
+        const result = await weixin.getConfig;
+        console.log(result);
+    } catch (err) {
+        console.log(err);
+    }
+}
+test();
