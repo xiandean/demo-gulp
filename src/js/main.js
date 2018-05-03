@@ -9,8 +9,8 @@ const app = {
     events,
     share () {
         weixin.getConfig().then(() => {
-            if (this.musics.bg) {
-                document.getElementById((this.musics.bg)).play();
+            if (this.music.bg) {
+                document.getElementById((this.music.bg)).play();
             }
 
             weixin.setShare({
@@ -45,12 +45,12 @@ const app = {
 
 app.main();
 
-async function test () {
-    try {
-        const result = await weixin.getConfig;
-        console.log(result);
-    } catch (err) {
-        console.log(err);
-    }
-}
-test();
+// async function test () {
+//     try {
+//         const result = await weixin.getConfig;
+//         console.log(result);
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+// test();
