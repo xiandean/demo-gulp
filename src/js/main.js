@@ -326,9 +326,9 @@ const app = {
             getOpenid (callback) {
                 if (app.utils.getQueryString('openid')) {
                     app.api.user.openid = app.utils.getQueryString('openid');
-                    localStorage.setItem('wx_openid', app.api.user.openid);
-                } else if (!localStorage.getItem('wx_openid')) {
-                    app.api.user.openid = localStorage.getItem('wx_openid');
+                    localStorage.setItem('wx_openid_new', app.api.user.openid);
+                } else if (localStorage.getItem('wx_openid_new')) {
+                    app.api.user.openid = localStorage.getItem('wx_openid_new');
                 } else {
                     if (app.utils.getQueryString('oid')) {
                         window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + app.utils.getQueryString('oid');
