@@ -327,7 +327,7 @@ const app = {
                 if (app.utils.getQueryString('openid')) {
                     app.api.user.openid = app.utils.getQueryString('openid');
                     localStorage.setItem('wx_openid', app.api.user.openid);
-                } else if (localStorage.getItem('wx_openid') !== null) {
+                } else if (!localStorage.getItem('wx_openid')) {
                     app.api.user.openid = localStorage.getItem('wx_openid');
                 } else {
                     if (app.utils.getQueryString('oid')) {
