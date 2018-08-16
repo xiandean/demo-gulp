@@ -15,7 +15,7 @@ const app = {
         // 是否在微信上打开
         isWeixin () {
             const ua = navigator.userAgent.toLowerCase();
-            if (ua.match(/MicroMessenger/i) === 'micromessenger') {
+            if (ua.match(/MicroMessenger/i) == 'micromessenger') {
                 return true;
             } else {
                 return false;
@@ -232,7 +232,7 @@ const app = {
             const bgMusic = document.getElementById(this.bg);
             let autoplay = true;
 
-            $(bgMusic).parent().on('touchstart', (event) => {
+            $(bgMusic).parent().on('touchstart', function (event) {
                 event.stopPropagation();
                 autoplay = false;
 
