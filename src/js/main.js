@@ -355,9 +355,9 @@ var app = (function (app) {
                     success: function (res) {
                         console.log(res);
                         if (res.error === 10000) {
-                            user.openid = res.data.uid
-                            user.name = res.data.name
-                            user.avatar = res.data.image_url
+                            app.api.user.openid = res.data.uid
+                            app.api.user.name = res.data.name
+                            app.api.user.avatar = res.data.image_url
 
                             callback && callback(app.api.user);
                         } else {
