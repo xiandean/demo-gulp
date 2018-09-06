@@ -370,21 +370,17 @@ const app = {
         weibo: {
             getUserInfo (callback) {
                 $.ajax({
-                    url: 'http://mblogv2.city.sina.com.cn/interface/tcommonv2/no_auth/user/json_get_current_user_info_new.php',
-                    data: {
-                        app_id: 196,
-                        t: 'jsonp'
-                    },
+                    url: 'http://interface.gd.sina.com.cn/gdif/weibo/uid.html',
                     dataType: 'jsonp',
-                    success (d) {
-                        console.log(d);
-                        if (d.error == 1) {
-                            window.location.href = 'http://login.weibo.cn/login/setssocookie/?loginpage=h5&backUrl=' + location.href;
-                        } else if (d.data.errno == 1) {
-                            app.api.user.openid = d.current_uid;
-                            app.api.user.name = d.data.result.screen_name;
-                            app.api.user.avatar = d.data.result.avatar_large;
+                    success (res) {
+                        console.log(res);
+                        if (d.error == 10000) {
+                            app.api.user.openid = res.data.uid
+                            app.api.user.name = res.data.name
+                            app.api.user.avatar = res.data.image_url
                             callback && callback(app.api.user);
+                        } else {
+                            window.location.href = 'http://login.weibo.cn/login/setssocookie/?loginpage=h5&backUrl=' + location.href;
                         }
                     },
                     error (d) {
