@@ -95,22 +95,16 @@ export const weixin = {
 export const weibo = {
     getUserInfo() {
         return jsonp({
-            url: 'http://mblogv2.city.sina.com.cn/interface/tcommonv2/no_auth/user/json_get_current_user_info_new.php',
-            data: {
-                app_id: 196,
-                t: 'jsonp'
-            }
+            url: 'http://interface.gd.sina.com.cn/gdif/weibo/uid.html'
         }).then((res) => {
-            if (res.error === 1) {
-                window.location.href = 'http://login.weibo.cn/login/setssocookie/?loginpage=h5&backUrl=' + location.href;
-            } else if (res.data.errno === 1) {
-                user.openid = res.current_uid;
-                user.name = res.data.result.screen_name;
-                user.avatar = res.data.result.avatar_large;
+            if (res.error === 10000) {
+                user.openid = res.data.uid
+                user.name = res.data.name
+                user.avatar = res.data.image_url
 
                 return Promise.resolve(user);
             } else {
-                return Promise.reject(res);
+                window.location.href = 'https://passport.weibo.cn/signin/login?entry=mweibo&r=' + window.location.href
             }
         });
     }
