@@ -9,6 +9,12 @@ const app = {
     events,
     async share () {
         await weixin.getConfig()
+        weixin.setShare({
+            title: '分享标题', // 分享标题
+            desc: '分享描述', // 分享描述
+            imgUrl: 'http://n.sinaimg.cn/gd/xiaopiqi/answer/weixin_share.jpg', // 分享图标
+            // callback: function () {}, // 分享成功回调
+        })
         if (this.music.bg) {
             document.getElementById((this.music.bg)).play()
         }
