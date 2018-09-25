@@ -1,5 +1,5 @@
-import jsonp from './jsonp'
-import user from './user'
+import jsonp from './jsonp.js'
+import user from './user.js'
 
 export default {
     async getUserInfo() {

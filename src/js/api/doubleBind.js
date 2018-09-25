@@ -1,6 +1,6 @@
-import weixin from './weixin'
-import weibo from './weibo'
-import { isWeixin } from '../js/util'
+import weixin from './weixin.js'
+import weibo from './weibo.js'
+import { isWeixin } from '../utils/utils.js'
 
 export default async () => {
     if (isWeixin()) {

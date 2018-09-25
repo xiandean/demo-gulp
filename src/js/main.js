@@ -1,4 +1,4 @@
-import {weixin} from './api.js';
+import weixin from './api/weixin.js';
 import preload from './preload.js';
 import events from './events.js';
 import music from './music.js';
@@ -7,25 +7,11 @@ const app = {
     preload,
     music,
     events,
-    share () {
-        weixin.getConfig().then(() => {
-            if (this.music.bg) {
-                document.getElementById((this.music.bg)).play();
-            }
-
-            weixin.setShare({
-              title: '分享标题', // 分享标题
-              desc: '分享描述', // 分享描述
-              imgUrl: 'http://n.sinaimg.cn/gd/xiaopiqi/answer/weixin_share.jpg' // 分享图标
-              // callback: '', // 分享成功回调
-            });
-        });
-
-        // weixin.getOpenid().then(weixin.getUserInfo).then((user) => {
-        //     console.log(user);
-        // }).catch((err) => {
-        //     console.log(err);
-        // });
+    async share () {
+        await weixin.getConfig()
+        if (this.music.bg) {
+            document.getElementById((this.music.bg)).play()
+        }
     },
     // app主入口
     main () {
@@ -44,13 +30,3 @@ const app = {
 };
 
 app.main();
-
-// async function test () {
-//     try {
-//         const result = await weixin.getConfig;
-//         console.log(result);
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
-// test();

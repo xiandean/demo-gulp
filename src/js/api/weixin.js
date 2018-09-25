@@ -1,15 +1,16 @@
-import jsonp from './jsonp'
-import user from './user'
-import { getQueryString } from '../js/util'
+import jsonp from './jsonp.js'
+import user from './user.js'
+import { getQueryString } from '../utils/utils.js'
 
 export default {
     async getConfig() {
         let res = await jsonp({
-            url: 'http://news.gd.sina.com.cn/market/c/gd/weixinjsapi/index.php',
+            url: 'http://o.gd.sina.com.cn/market/c/gd/weixinjsapi/index.php',
             data: {
                 url: window.location.href.split('#')[0]
             }
         })
+        console.log(res)
         wx.config({
             debug: false,
             appId: res.data.appId,

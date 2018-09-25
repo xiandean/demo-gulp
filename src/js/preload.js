@@ -1,4 +1,4 @@
-import {loadImages} from './util.js';
+import {loadImages} from './utils/utils.js';
 
 export default {
     images: [],
