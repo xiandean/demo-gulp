@@ -1,3 +1,4 @@
+
 export default {
     preventDefault () {
         document.addEventListener('touchmove', (event) => {
