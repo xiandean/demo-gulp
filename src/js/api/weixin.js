@@ -56,9 +56,9 @@ export default {
     getOpenid() {
         if (getQueryString('openid')) {
             user.openid = getQueryString('openid')
-            localStorage.setItem('wx_openid', user.openid)
-        } else if (localStorage.getItem('wx_openid')) {
-            user.openid = localStorage.getItem('wx_openid')
+            localStorage.setItem('wx_openid_2018', user.openid)
+        } else if (localStorage.getItem('wx_openid_2018')) {
+            user.openid = localStorage.getItem('wx_openid_2018')
         } else {
             if (getQueryString('oid')) {
                 window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + getQueryString('oid')
@@ -69,10 +69,10 @@ export default {
         return Promise.resolve(user.openid)
     },
 
-    async getUserInfo(openid = user.openid) {
+    async getUserInfo(uid = user.openid) {
+        let openid = uid;
         if (!openid) {
-            await this.getOpenid()
-            return this.getUserInfo()
+            openid = await this.getOpenid()
         }
         let res = await jsonp({
             url: 'http://interface.gd.sina.com.cn/gdif/gdwx/c_member/',
