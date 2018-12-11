@@ -7,7 +7,7 @@ const app = {
             const url = window.location.search.replace(/&amp;(amp;)?/g, '&');
             const r = url.substr(1).match(reg);
             if (r !== null) {
-                return unescape(r[2]);
+                return decodeURIComponent(r[2]);
             }
             return null;
         },
