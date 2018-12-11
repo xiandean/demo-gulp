@@ -7,7 +7,7 @@ var app = (function (app) {
             var url = window.location.search.replace(/&amp;(amp;)?/g, '&');
             var r = url.substr(1).match(reg);
             if (r !== null) {
-                return unescape(r[2]);
+                return decodeURIComponent(r[2]);
             }
             return null;
         },
@@ -462,6 +462,22 @@ var app = (function (app) {
             document.addEventListener('touchmove', function (event) {
                 event.preventDefault();
             }, { passive: false });
+        },
+
+        fixedInputBug: function () {
+            var _this = this;
+            $('input, textarea, select').on('blur', function () {
+                _this.isFocus = false;
+                setTimeout(function () {
+                    if (!_this.isFocus) {
+                        document.body.scrollTop -= 0;
+                    }
+                }, 0);
+            });
+
+            $('input, textarea, select').on('focus', function () {
+                _this.isFocus = true;
+            });
         },
 
         // 入口
