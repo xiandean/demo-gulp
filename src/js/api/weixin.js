@@ -54,11 +54,13 @@ export default {
     },
 
     getOpenid() {
-        if (getQueryString('openid')) {
+        let isCopy = location.href.split('#')[1] ? true : false;
+        if (getQueryString('openid') && !isCopy) {
             user.openid = getQueryString('openid')
-            localStorage.setItem('wx_openid_2018', user.openid)
-        } else if (localStorage.getItem('wx_openid_2018')) {
-            user.openid = localStorage.getItem('wx_openid_2018')
+            localStorage.setItem('wx_openid_2019_common', user.openid)
+            window.location.href += '#copy';
+        } else if (localStorage.getItem('wx_openid_2019_common')) {
+            user.openid = localStorage.getItem('wx_openid_2019_common')
         } else {
             if (getQueryString('oid')) {
                 window.location.href = 'http://interface.gd.sina.com.cn/gdif/gdwx/wxcode?oid=' + getQueryString('oid')

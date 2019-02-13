@@ -26,13 +26,17 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <title>demo-gulp</title>
-    <script src="http://guangdong.sinaimg.cn/subject/2017/lib/js/fixViewport750.js"></script>
+    <!-- <script src="http://guangdong.sinaimg.cn/subject/2017/lib/js/fixViewport750.js"></script> -->
+    <script>
+    var phoneScale = parseInt(window.screen.width)/750;
+    document.write('<meta name="viewport" content="width=750, initial-scale = '+ phoneScale+', maximum-scale = '+ phoneScale +', maximum-scale = '+ phoneScale +', target-densitydpi=device-dpi">');
+    </script>
     <link rel="stylesheet" href="css/style.css" inline>
 </head>
 
 <body>
     <div class="container">
-        <img src="images/1.png" alt="">
+        
     </div>
     <div id="orientLayer" class="mod-orient-layer">
         <div class="mod-orient-layer__content">
@@ -45,6 +49,10 @@
     </div> -->
     <script src="http://n.sinaimg.cn/gd/1017/zjld/vote/zepto.min.js"></script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="http://n.sinaimg.cn/gd/20180719/picc/html2canvas.min.js"></script>
+    <script src="http://n.sinaimg.cn/gd/20190201/grcbank/spring/easel.min.js"></script>
+    <script src="http://n.sinaimg.cn/gd/20190201/grcbank/spring/tweenjs.min.js"></script>
+    <script src="http://n.sinaimg.cn/gd/20190201/grcbank/spring/preloadjs.min.js"></script>
     <script src="js/main.js" inline></script>
 </body>
 

@@ -22,7 +22,7 @@ const app = {
     // app主入口
     main () {
         // 微信分享
-        this.share();
+        // this.share();
 
         // 图片预加载入口
         this.preload.main();
