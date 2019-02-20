@@ -36,6 +36,7 @@
     "gulp-eslint": "^4.0.1",
     "gulp-inline-source": "^3.1.0",
     "gulp-plumber": "^1.1.0",
+    "gulp-postcss": "^8.0.0",
     "gulp-purifycss": "^0.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
@@ -44,11 +45,13 @@
     "json-server": "^0.12.1",
     "mockjs": "^1.0.1-beta3",
     "nodemon": "^1.12.1",
+    "postcss-adaptive": "^0.5.0",
     "run-sequence": "^2.2.0",
     "webpack": "^4.5.0",
     "webpack-stream": "^4.0.3"
   },
   "dependencies": {
+    "amfe-flexible": "^2.2.1",
     "axios": "^0.18.0",
     "jsonp": "^0.2.1"
   }
