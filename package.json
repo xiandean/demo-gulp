@@ -45,7 +45,7 @@
     "json-server": "^0.12.1",
     "mockjs": "^1.0.1-beta3",
     "nodemon": "^1.12.1",
-    "postcss-adaptive": "^0.5.0",
+    "postcss-px2rem": "^0.3.0",
     "run-sequence": "^2.2.0",
     "webpack": "^4.5.0",
     "webpack-stream": "^4.0.3"
