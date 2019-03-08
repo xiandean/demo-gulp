@@ -22,6 +22,14 @@ const webpackConfig = require('./webpack.config.js')
 const postcss = require('gulp-postcss');
 const adaptive = require('postcss-adaptive');
 
+const processors = [adaptive({
+    remUnit: 75,
+    baseDpr: 2,
+    remPrecision: 6,
+    hairlineClass: 'hairlines',
+    autoRem: true
+})];
+
 gulp.task('html', function () {
   return gulp.src(config.html.src)
     .pipe(gulp.dest(config.html.dest))
@@ -35,6 +43,7 @@ gulp.task('css', function () {
     .pipe(autoprefixer({
       browsers: ['iOS >= 7', 'Android >= 4', '> 1%', 'last 2 version']
     }))
+    .pipe(postcss(processors))
     // .pipe(cleanCSS())
     .pipe(sourcemaps.write('./maps'))
     .pipe(gulp.dest(config.css.dest))
@@ -49,33 +58,10 @@ gulp.task('sass', function () {
     .pipe(autoprefixer({
       browsers: ['iOS >= 7', 'Android >= 4', '> 1%', 'last 2 version']
     }))
+    .pipe(postcss(processors))
     // .pipe(cleanCSS())
     .pipe(sourcemaps.write('./maps'))
     .pipe(gulp.dest(config.sass.dest))
-    .pipe(browserSync.reload({ stream: true }))
-})
-
-gulp.task('rem', function () {
-  const processors = [adaptive({
-      remUnit: 75,
-      baseDpr: 2,
-      remPrecision: 6,
-      hairlineClass: 'hairlines',
-      autoRem: true
-  })];
-  return gulp.src(config.css.dest + '/*.css')
-    .pipe(plumber())
-    // .pipe(sourcemaps.init())
-    // .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
-    // .pipe(autoprefixer({
-    //   browsers: ['iOS >= 7', 'Android >= 4', '> 1%', 'last 2 version']
-    // }))
-    // // .pipe(cleanCSS())
-    // .pipe(sourcemaps.write('./maps'))
-    // .pipe(gulp.dest(config.sass.dest))
-    .pipe(postcss(processors))
-    // .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(config.css.dest))
     .pipe(browserSync.reload({ stream: true }))
 })
 
@@ -121,17 +107,13 @@ gulp.task('clean', function () {
 
 // gulp.task('build', ['html', 'css', 'sass', 'image', 'js', 'lib']);
 gulp.task('build', function (callback) {
-  runSequence('clean', ['html', 'css', 'sass', 'image', 'js', 'lib'], 'rem', callback)
+  runSequence('clean', ['html', 'css', 'sass', 'image', 'js', 'lib'], callback)
 })
 
 gulp.task('watch', function () {
   gulp.watch(config.html.src, ['html'])
-  gulp.watch(config.css.src,[ function() {
-      runSequence('css', 'rem')
-    }])
-  gulp.watch(config.sass.src,[ function() {
-      runSequence('sass', 'rem')
-    }])
+  gulp.watch(config.css.src,['css'])
+  gulp.watch(config.sass.src,['sass'])
   gulp.watch(config.image.src, ['image'])
   gulp.watch(config.js.src, ['js'])
   gulp.watch(config.lib.src, ['lib'])
