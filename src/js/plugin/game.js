@@ -75,10 +75,15 @@ export default class Game {
             console.log(e);
         });
         if (onLoadProgress) {
-            this._loader.addEventListener('progress', onLoadProgress.bind(this));
+            this._loader.addEventListener('progress', (e) => {
+                let progress = Math.floor(e.progress * 100);
+                onLoadProgress.call(this, progress);
+            });
         }
         if (onLoadComplete) {
-            this._loader.addEventListener('complete', onLoadComplete.bind(this));
+            this._loader.addEventListener('complete', (e) => {
+               onLoadComplete.call(this, this._loader);
+            });
         }
 
         this._loader.loadManifest(images);
