@@ -23,7 +23,7 @@ const postcss = require('gulp-postcss');
 const adaptive = require('postcss-adaptive');
 
 const processors = [adaptive({
-    remUnit: 75,
+    remUnit: 100,
     baseDpr: 2,
     remPrecision: 6,
     hairlineClass: 'hairlines',
@@ -54,7 +54,7 @@ gulp.task('sass', function () {
   return gulp.src(config.sass.src)
     .pipe(plumber())
     .pipe(sourcemaps.init())
-    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
+    .pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
     .pipe(autoprefixer({
       browsers: ['iOS >= 7', 'Android >= 4', '> 1%', 'last 2 version']
     }))
