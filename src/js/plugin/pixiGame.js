@@ -138,7 +138,7 @@ class Game {
     }
 
     getObject(name) {
-        return this.objects[name];   
+        return this.objects[name];
     }
 
     // 创建游戏对象
